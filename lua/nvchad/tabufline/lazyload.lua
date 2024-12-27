@@ -7,15 +7,7 @@ local autocmd = vim.api.nvim_create_autocmd
 -- store listed buffers in tab local var
 vim.t.bufs = vim.t.bufs or vim.api.nvim_list_bufs()
 
-local listed_bufs = {}
-
-for _, val in ipairs(vim.t.bufs) do
-  if vim.bo[val].buflisted then
-    table.insert(listed_bufs, val)
-  end
-end
-
-vim.t.bufs = listed_bufs
+ 
 
 -- autocmds for tabufline -> store bufnrs on bufadd, bufenter events
 -- thx to https://github.com/ii14 & stores buffer per tab -> table
