@@ -5,12 +5,8 @@ local cur_buf = api.nvim_get_current_buf
 local autocmd = vim.api.nvim_create_autocmd
 
 -- store listed buffers in tab local var
-vim.t.bufs = vim.t.bufs
-  or vim.tbl_filter(function(x)
-    return get_opt("buflisted", { buf = x })
-  end, vim.api.nvim_list_bufs())
+vim.t.bufs = {}
  
-
 -- autocmds for tabufline -> store bufnrs on bufadd, bufenter events
 -- thx to https://github.com/ii14 & stores buffer per tab -> table
 autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
