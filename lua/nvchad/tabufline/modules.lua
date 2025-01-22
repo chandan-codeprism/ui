@@ -64,20 +64,26 @@ M.treeOffset = function()
 end
 
 M.buffers = function()
-  local buffers = {}
-  local has_current = false -- have we seen current buffer yet?
+  local buffers = vim.t.visible_bufs
 
-  for i, nr in ipairs(vim.t.bufs) do
-    if ((#buffers + 1) * opts.bufwidth) > available_space() then
-      if has_current then
-        break
+  if not buffers then
+    local has_current = false -- have we seen current buffer yet?
+    buffers = {}
+
+    for i, nr in ipairs(vim.t.bufs) do
+      if ((#buffers + 1) * opts.bufwidth) > available_space() then
+        if has_current then
+          break
+        end
+
+        table.remove(buffers, 1)
       end
 
-      table.remove(buffers, 1)
+      has_current = cur_buf() == nr or has_current
+      table.insert(buffers, style_buf(nr, i, opts.bufwidth))
     end
 
-    has_current = cur_buf() == nr or has_current
-    table.insert(buffers, style_buf(nr, i, opts.bufwidth))
+    vim.t.visible_bufs = buffers
   end
 
   return table.concat(buffers) .. txt("%=", "Fill") -- buffers + empty space

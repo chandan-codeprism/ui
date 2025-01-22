@@ -15,7 +15,12 @@ vim.t.bufs = vim.t.bufs
 autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
   callback = function(args)
     local bufs = vim.t.bufs
+    local listed = get_opt("buflisted", { buf = args.buf })
     local is_curbuf = cur_buf() == args.buf
+
+    if listed then
+      vim.t.visible_bufs = nil
+    end
 
     if bufs == nil then
       bufs = cur_buf() == args.buf and {} or { args.buf }
@@ -23,9 +28,9 @@ autocmd({ "BufAdd", "BufEnter", "tabnew" }, {
       -- check for duplicates
       if
         not vim.tbl_contains(bufs, args.buf)
-        and (args.event == "BufEnter" or not is_curbuf or get_opt("buflisted", { buf = args.buf }))
+        and (args.event == "BufEnter" or not is_curbuf or listed)
         and api.nvim_buf_is_valid(args.buf)
-        and get_opt("buflisted", { buf = args.buf })
+        and listed
       then
         table.insert(bufs, args.buf)
       end
